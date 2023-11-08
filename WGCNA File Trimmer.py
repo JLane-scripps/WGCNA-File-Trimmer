@@ -56,8 +56,16 @@ def remove_blanks():
         # Load the Excel file into a DataFrame
         df = pd.read_excel(input_excel_file, engine='openpyxl')
 
+        # Debugging, and to view the dataframe in console before adjustment
+        print(df)
+
+        # If needing to remove extra unnecessary columns -- or only keep specific ones -- write that function here
+
         # Iterate through the DataFrame to check for blank values and remove rows with blanks
         df = df.dropna()
+
+        # Debugging, and to view the dataframe in console after adjustment
+        print(df)
 
         # Save the filtered DataFrame as an Excel file
         df.to_excel(output_excel_file, index=False, engine='openpyxl')
@@ -93,19 +101,20 @@ def find_significance():
             # Find the "significant" column (technically unnecessary, can be deleted)
             sig_column = list(df.columns)[1]
 
-            # Filter rows where the "significant" column contains the BOOLEAN true (NOT A STRING)
+            # Filter (keep) rows where the "significant" column contains the BOOLEAN true (NOT A STRING)
             df = df[df[sig_column] == True]
 
+            # For debugging, and to view the number of columns marked true per sheet in the console.
             print(df)
 
             # Add a new column for the sheet name
             df['sheet_name'] = sheet_name
 
-            # Append the filtered DataFrame to the combined DataFrame
+            # Append the filtered DataFrame to the combined DataFrame. All sheets are combined into one
             combined_df = pd.concat([combined_df, df], ignore_index=True)
 
-        # Remove rows with duplicate values in the "term_id" column
-        combined_df = combined_df.drop_duplicates(subset="term_id")
+        # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
+        combined_df = combined_df[~combined_df['term_id'].duplicated(keep=False)]
 
         # Save the filtered DataFrame as an Excel file
         combined_df.to_excel(output_excel_file, index=False, engine='openpyxl')

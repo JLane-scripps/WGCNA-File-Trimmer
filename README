@@ -1,0 +1,47 @@
+__          _______  _____ _   _            ______ _ _        _______   _                               
+\ \        / / ____|/ ____| \ | |   /\     |  ____(_) |      |__   __| (_)                              
+ \ \  /\  / / |  __| |    |  \| |  /  \    | |__   _| | ___     | |_ __ _ _ __ ___  _ __ ___   ___ _ __ 
+  \ \/  \/ /| | |_ | |    | . ` | / /\ \   |  __| | | |/ _ \    | | '__| | '_ ` _ \| '_ ` _ \ / _ \ '__|
+   \  /\  / | |__| | |____| |\  |/ ____ \  | |    | | |  __/    | | |  | | | | | | | | | | | |  __/ |   
+    \/  \/   \_____|\_____|_| \_/_/    \_\ |_|    |_|_|\___|    |_|_|  |_|_| |_| |_|_| |_| |_|\___|_|  
+
+# The ReadMe
+
+This executable (and its corresponding python file) is a very simple (somewhat ugly) tool 
+to benefit the researcher using WGCNA (weighted gene co-expression network analysis), 
+specifically the MetaNetwork ( https://github.com/avcarr2/MetaNetwork/tree/master ). 
+
+The program has two main functions: The first being Remove Blanks, the second being Remove Insignificance. Details on these later. 
+
+Presently, it is possible any PC running this executable may require the installation of "openpyxl", an engine used to read and write the Excel files. 
+The program will alert you of this when running the executable and attempting to use either function.
+Hopefully Pip is already installed , and the user may merely install openpyxl:
+  Windows + R to open the "Run" tool > enter "cmd" without quotations to open Command Prompt > type "pip install openpyxl" without quotes, hit enter. 
+If Pip is not installed, please google how to do so; it's not difficult but updated guides will be more useful than my eventually-dated explanation here. 
+
+# Remove Blanks:
+This function is useful for formatting data BEFORE entering files into the WGCNA MetaNetwork. MetaNetwork does not handle blank values well, crashing 
+mid-job or attributing incorrect values; therefore it is necessary to remove all rows that contain blank values before running the analysis. Note that 
+entering 0's for all blanks may affect data integrity and give very incorrect results. This function copies the original input dataframe, removes each 
+row (usually the entire protein) containing no value (blank cells), and saves the result as a new file. File names are automatically generated from the 
+original file's name with an appended "blanks_removed" -- no original data is altered or lost. Files are found using the "Find File" button opening 
+user directory. The console will print contracted versions of the dataframe ater it is read and after it is adjusted.
+  Known Issue*: If two or more columns share the same name, each duplicate will have a ".X" appended to them where X = the number of duplicates. 
+
+# Remove Insignificance
+This function is useful for formatting data AFTER a WGCNA MetaNetwork analysis has been run, and the results have been downloaded.
+It takes in the "gProfiler_Enrichment_Results." file* which should have one sheet per module created by the MetaNetwork. 
+Again, to avoid data loss or alteration, each sheet is copied in (and again printed to console), filtered to keep only rows marked 
+as TRUE in the 'significant' column* (marked as significant by the MetaNetwork parameters) and concatenated all to the same new dataframe. 
+The console shows the number of rows marked significant in each sheet, which may be useful to you.
+  Note*: Currently MetaNetwork generates these gProfiler names with a period at the end. This program does not add it and doesn't adjust it.
+  Note*: TRUE in these Excel cells is a boolean, not a string.
+Rows are marked by which sheet (aka which color module) they came from in a new column added to the end.
+The function then removes all rows with Term_ID's appearing more than once. It removes duplicates AND the first to appear in the dataset. 
+This leaves only truly unique and significant results. The file is saved with the original file's name + "_significants"* next to the original.
+  Note*:  No I don't mean "significance", i mean the results that are significant. 
+
+# Executable
+The executable file will be recreated and uploaded with any changes.
+I do not work for the WGCNA developers or the MetaNetwork developers or their team. I will not know the answers to MetaNetwork questions.
+If any issues arise with this program, please leave a comment or message this github and I will attempt to fix it. Thanks!

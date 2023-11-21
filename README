@@ -7,13 +7,13 @@ __          _______  _____ _   _            ______ _ _        _______   _
 
 # The ReadMe
 
-This executable (and its corresponding python file) is a very simple (somewhat ugly) tool 
+This executable (and its corresponding python file) is a very simple tool 
 to benefit the researcher using WGCNA (weighted gene co-expression network analysis), 
 specifically the MetaNetwork ( https://github.com/avcarr2/MetaNetwork/tree/master ). 
 
 The program has two main functions: The first being Remove Blanks, the second being Remove Insignificance. Details on these later. 
 
-Presently, it is possible any PC running this executable may require the installation of "openpyxl", an engine used to read and write the Excel files. 
+Presently, it is possible any PC running the executable may require the installation of "openpyxl", an engine used to read and write the Excel files. 
 The program will alert you of this when running the executable and attempting to use either function.
 Hopefully Pip is already installed , and the user may merely install openpyxl:
   Windows + R to open the "Run" tool > enter "cmd" without quotations to open Command Prompt > type "pip install openpyxl" without quotes, hit enter. 

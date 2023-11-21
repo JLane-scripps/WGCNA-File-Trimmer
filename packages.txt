@@ -1,2 +1,1 @@
-# This file is to add packages required by the Linux environment via `apt-get`, not python packages needing simple import.
 openpyxl

@@ -33,6 +33,13 @@ if st.sidebar.button("Process"):
 
     elif operation == "Remove Insignificance":
         try:
+            # Get the original file name and prepare an appended name for it
+            file_name = file.name.removesuffix('.xlsx')
+            file_name = file_name.rstrip(file_name[-1])
+            file_name = f"{file_name}_significant"
+            excel_output = BytesIO()
+
+            # read in the orig file and begin to filter it, sheet by sheet. df = dataframe
             xls = pd.ExcelFile(file)
             combined_df = pd.DataFrame()
             for sheet_name in xls.sheet_names:
@@ -42,16 +49,14 @@ if st.sidebar.button("Process"):
                 df = df[df[sig_column] == True]
                 st.write(df)  # debugging, prints in console
                 df['sheet_name'] = sheet_name
-                combined_df = pd.concat([combined_df, df], ignore_index=True)
+                # combined_df = pd.concat([combined_df, df], ignore_index=True)
+                # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
+                df = df[~df['term_id'].duplicated(keep=False)]
+                df.to_excel(excel_output, sheet_name= sheet_name, index = False, engine='openpyxl')
                 # end of for loop
-            # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
-            combined_df = combined_df[~combined_df['term_id'].duplicated(keep=False)]
-            file_name = file.name.removesuffix('.xlsx')
-            file_name = file_name.rstrip(file_name[-1])
-            file_name = f"{file_name}_significant"
+
             # Save the filtered DataFrame as an Excel file
-            excel_output = BytesIO()
-            combined_df.to_excel(excel_output, index=False, engine='openpyxl')
+            # combined_df.to_excel(excel_output, index=False, engine='openpyxl')
             excel_output.seek(0)
             # Provide BytesIO object as data for the download button
             st.download_button('download file', excel_output, f"{file_name}.xlsx")

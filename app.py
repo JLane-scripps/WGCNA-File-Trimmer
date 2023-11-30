@@ -8,7 +8,7 @@ file_name = ""
 st.title("WGCNA File Trimmer")
 # Sidebar
 st.sidebar.header("Select Operation")
-operation = st.sidebar.radio("", ["Remove Blanks", "Remove Insignificance"])
+operation = st.sidebar.radio(" ", ["Remove Blanks", "Remove Insignificance"])
 
 # File selection
 st.sidebar.header("File Selection")
@@ -57,7 +57,7 @@ if st.sidebar.button("Process"):
                     df_sheet = combined_df[combined_df['sheet_name'] == sheet_name]
                     df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
                 # end of for loop
-            combined_df.to_excel(excel_output, index=False, engine='openpyxl')
+            # combined_df.to_excel(excel_output, index=False, engine='openpyxl')
             excel_output.seek(0)
             # Provide BytesIO object as data for the download button
             st.download_button('download file', excel_output, f"{file_name}.xlsx")

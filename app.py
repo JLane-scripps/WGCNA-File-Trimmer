@@ -6,6 +6,29 @@ from io import BytesIO
 file_name = ""
 
 st.title("WGCNA File Trimmer")
+st.text("Welcome. This program is a very simple tool to benefit the researcher using WGCNA "
+        "(weighted gene co-expression network analysis), specifically the MetaNetwork "
+        "( https://github.com/avcarr2/MetaNetwork/tree/master ). ")
+st.text("REMOVE BLANKS:\nThis function is useful for formatting data BEFORE entering files into the WGCNA MetaNetwork. MetaNetwork does "
+        "not handle blank values well, crashing mid-job or attributing incorrect values; therefore it is necessary to "
+        "remove all rows that contain blank values before running the analysis. Note that entering 0's for all blanks "
+        "may affect data integrity and give very incorrect results. This function copies the original input dataframe, "
+        "removes each row (usually the entire protein) containing no value (blank cells), and saves the result as a new "
+        "file. File names are automatically generated from the original file's name with an appended 'blanks_removed' --"
+        " no original data is altered or lost. Files are found using the 'Find File' button opening user directory. "
+        "The console will print contracted versions of the dataframe ater it is read and after it is adjusted.  "
+        "Known Issue*: If two or more columns share the same name, each duplicate will have a '.X' appended to them "
+        "where X = the number of duplicates.")
+st.text("REMOVE INSIGNIFICANCE:\nThis function is useful for formatting data AFTER a WGCNA MetaNetwork analysis has "
+        "been run, and the results have been downloaded. It takes in the 'gProfiler_Enrichment_Results.' file* which "
+        "should have one sheet per module created by the MetaNetwork. Again, to avoid data loss or alteration, "
+        "each sheet is copied in (and again printed to console), filtered to keep only rows marked as TRUE in the "
+        "'significant' column* (marked as significant by the MetaNetwork parameters) and concatenated all to the same "
+        "new dataframe. The console shows the number of rows marked significant in each sheet, which may be useful to you."
+        "Rows are marked by which sheet (aka which color module) they came from in a new column added to the end."
+        "The function then removes all rows with Term_ID's appearing more than once. It removes duplicates AND the "
+        "first to appear in the dataset. This leaves only truly unique and significant results. "
+        "The file is saved with the original file's name + '_significants' next to the original.")
 # Sidebar
 st.sidebar.header("Select Operation")
 operation = st.sidebar.radio(" ", ["Remove Blanks", "Remove Insignificance"])

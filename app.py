@@ -34,8 +34,7 @@ if st.sidebar.button("Process"):
     elif operation == "Remove Insignificance":
         try:
             xls = pd.ExcelFile(file)
-            combined_df = pd.DataFrame()
-            sheet_list = []
+
             for sheet_name in xls.sheet_names:
                 df = pd.read_excel(xls, sheet_name, engine='openpyxl')
                 sig_column = list(df.columns)[1]
@@ -43,16 +42,17 @@ if st.sidebar.button("Process"):
                 df = df[df[sig_column] == True]
                 st.write(df)  # debugging, prints in console
                 df['sheet_name'] = sheet_name
-                df_list.append(df)
+                # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
+                df = df[~df['term_id'].duplicated(keep=False)]
+                xls.sheet_name = df
                 # end of for loop
-            # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
-            combined_df = combined_df[~combined_df['term_id'].duplicated(keep=False)]
+
             file_name = file.name.removesuffix('.xlsx')
             file_name = file_name.rstrip(file_name[-1])
             file_name = f"{file_name}_significant"
             # Save the filtered DataFrame as an Excel file
             excel_output = BytesIO()
-            combined_df.to_excel(excel_output, index=False, engine='openpyxl')
+            xls.to_excel(excel_output, index=False, engine='openpyxl')
             excel_output.seek(0)
             # Provide BytesIO object as data for the download button
             st.download_button('download file', excel_output, f"{file_name}.xlsx")

@@ -34,7 +34,7 @@ if st.sidebar.button("Process"):
     elif operation == "Remove Insignificance":
         try:
             xls = pd.ExcelFile(file)
-
+            combined_df = pd.DataFrame()
             for sheet_name in xls.sheet_names:
                 df = pd.read_excel(xls, sheet_name, engine='openpyxl')
                 sig_column = list(df.columns)[1]
@@ -42,17 +42,22 @@ if st.sidebar.button("Process"):
                 df = df[df[sig_column] == True]
                 st.write(df)  # debugging, prints in console
                 df['sheet_name'] = sheet_name
-                # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
-                df = df[~df['term_id'].duplicated(keep=False)]
-                xls.sheet_name = df
+                combined_df = pd.concat([combined_df, df], ignore_index=True)
                 # end of for loop
-
-            file_name = file.name.removesuffix('.xlsx')
-            file_name = file_name.rstrip(file_name[-1])
+            # Identify and remove all occurrences of duplicate values (INCLUDING ORIGINAL) in the "term_id" column
+            combined_df = combined_df[~combined_df['term_id'].duplicated(keep=False)]
+            file_name = file.name.removesuffix('.xlsx')  # removes file type from name, obviously
+            file_name = file_name.rstrip(file_name[-1])  # removes annoying extra period MetaNetwork gives the file
             file_name = f"{file_name}_significant"
-            # Save the filtered DataFrame as an Excel file
-            excel_output = BytesIO()
-            xls.to_excel(excel_output, index=False, engine='openpyxl')
+            excel_output = BytesIO()  # necessary step for making the file savable in streamlit
+
+            # re-sort unique results back into separate sheets
+            with pd.ExcelWriter(excel_output, engine='openpyxl') as writer:
+                for sheet_name in xls.sheet_names:
+                    df_sheet = combined_df[combined_df['sheet_name'] == sheet_name]
+                    df_sheet.to_excel(writer, sheet_name=sheet_name, index=False)
+                # end of for loop
+            combined_df.to_excel(excel_output, index=False, engine='openpyxl')
             excel_output.seek(0)
             # Provide BytesIO object as data for the download button
             st.download_button('download file', excel_output, f"{file_name}.xlsx")

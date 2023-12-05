@@ -15,7 +15,7 @@ st.markdown(body="This function is useful for formatting data BEFORE entering fi
         "not handle blank values well, crashing mid-job or attributing incorrect values; therefore it is necessary to "
         "remove all rows that contain blank values before running the analysis. Note that entering 0's for all blanks "
         "may affect data integrity and give very incorrect results. This function copies the original input dataframe, "
-        "removes each row (usually the entire protein) containing no value (blank cells), and saves the result as a new "
+        "removes every row (usually the entire protein) that contains a blank cell, and saves the result as a new "
         "file. File names are automatically generated from the original file's name with an appended 'blanks_removed' --"
         " no original data is altered or lost. Files are found using the 'Find File' button opening user directory. "
         "The console will print contracted versions of the dataframe ater it is read and after it is adjusted.  "
@@ -47,7 +47,7 @@ if st.sidebar.button("Process"):
         try:
             # Load the Excel file into a DataFrame
             df = pd.read_excel(file, engine='openpyxl')
-            df = df.dropna()
+            df = df.dropna()  # removes every row with any missing value
             file_name = file.name.removesuffix('.xlsx')
             st.dataframe(df)
             out_file = df.to_csv()

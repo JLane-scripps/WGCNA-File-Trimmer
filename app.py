@@ -6,10 +6,11 @@ from io import BytesIO
 file_name = ""
 
 st.title("WGCNA File Trimmer")
-st.text("Welcome. This program is a very simple tool to benefit the researcher using WGCNA "
+st.text_area("Welcome. This program is a very simple tool to benefit the researcher using WGCNA "
         "(weighted gene co-expression network analysis), specifically the MetaNetwork "
         "( https://github.com/avcarr2/MetaNetwork/tree/master ). ")
-st.text("REMOVE BLANKS:\nThis function is useful for formatting data BEFORE entering files into the WGCNA MetaNetwork. MetaNetwork does "
+st.header("Remove Blanks:")
+st.text_area("This function is useful for formatting data BEFORE entering files into the WGCNA MetaNetwork. MetaNetwork does "
         "not handle blank values well, crashing mid-job or attributing incorrect values; therefore it is necessary to "
         "remove all rows that contain blank values before running the analysis. Note that entering 0's for all blanks "
         "may affect data integrity and give very incorrect results. This function copies the original input dataframe, "
@@ -19,7 +20,9 @@ st.text("REMOVE BLANKS:\nThis function is useful for formatting data BEFORE ente
         "The console will print contracted versions of the dataframe ater it is read and after it is adjusted.  "
         "Known Issue*: If two or more columns share the same name, each duplicate will have a '.X' appended to them "
         "where X = the number of duplicates.")
-st.text("REMOVE INSIGNIFICANCE:\nThis function is useful for formatting data AFTER a WGCNA MetaNetwork analysis has "
+st.divider()
+st.header("Remove Insignificance:")
+st.text("This function is useful for formatting data AFTER a WGCNA MetaNetwork analysis has "
         "been run, and the results have been downloaded. It takes in the 'gProfiler_Enrichment_Results.' file* which "
         "should have one sheet per module created by the MetaNetwork. Again, to avoid data loss or alteration, "
         "each sheet is copied in (and again printed to console), filtered to keep only rows marked as TRUE in the "

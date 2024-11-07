@@ -47,10 +47,18 @@ if st.sidebar.button("Process"):
         try:
             # Load the Excel file into a DataFrame
             df = pd.read_excel(file, engine='openpyxl')
-            df = df.dropna()  # removes every row with any missing value
+
+            # Temporarily replace missing values with a unique placeholder
+            placeholder_value = "MISSING"
+            df = df.fillna(placeholder_value)
+
+            # Remove rows containing the placeholder
+            df = df[~df.isin([placeholder_value]).any(axis=1)]
+
+            # Name and provide new downloadable file
             file_name = file.name.removesuffix('.xlsx')
             st.dataframe(df)
-            out_file = df.to_csv()
+            out_file = df.to_csv(index=False)
             st.download_button('download file', out_file, f"{file_name}_blanks_removed.csv")
             st.success(f"Filtered data saved to {file_name}_blanks_removed")
         except FileNotFoundError:

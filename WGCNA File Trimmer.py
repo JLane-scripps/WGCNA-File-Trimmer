@@ -53,19 +53,21 @@ def remove_blanks():
         input_excel_file = os.path.join(input_directory, input_filename)
         output_excel_file = os.path.join(input_directory, f"{output_filename}.xlsx")
 
-        # Load the Excel file into a DataFrame
-        df = pd.read_excel(input_excel_file, engine='openpyxl')
+        # Load the Excel file into a DataFrame and ensure all columns are read as text
+        df = pd.read_excel(input_excel_file, engine='openpyxl', dtype=str)
 
-        # Debugging, and to view the dataframe in console before adjustment
-        print(df)
+        # Temporarily replace missing values with a unique placeholder
+        placeholder_value = "MISSING"
+        df = df.fillna(placeholder_value)
 
-        # If needing to remove extra unnecessary columns -- or only keep specific ones -- write that function here
+        # Debugging: Print the DataFrame after filling missing values for verification
+        print("DataFrame after filling missing values:\n", df)
 
-        # Iterate through the DataFrame to check for blank values and remove rows with blanks
-        df = df.dropna()
+        # Remove rows containing the placeholder
+        df = df[~df.isin([placeholder_value]).any(axis=1)]
 
-        # Debugging, and to view the dataframe in console after adjustment
-        print(df)
+        # Debugging: Print the DataFrame after removing rows with the placeholder
+        print("DataFrame after removing rows with placeholder values:\n", df)
 
         # Save the filtered DataFrame as an Excel file
         df.to_excel(output_excel_file, index=False, engine='openpyxl')
@@ -75,6 +77,7 @@ def remove_blanks():
         result_label.config(text="File not found. Please check the file path.")
     except Exception as e:
         result_label.config(text=f"An error occurred: {str(e)}")
+
 
 def find_significance():
     try:
